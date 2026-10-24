@@ -2,40 +2,113 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#111827">
+<meta name="theme-color" content="#25170e">
 <title>EASY WALLET — User App</title>
-<link rel="stylesheet" href="/static/style.css">
-</head>
+<style>
+:root{--brown:#24160e;--brown2:#3a2414;--gold:#d9ad4f;--gold2:#f6df9a;--cream:#fffaf0;--muted:#776a5b;--line:#eadfc9;--red:#9b2525;--green:#246b42}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:#f7f3eb;color:#281c12}
+.top{background:radial-gradient(ellipse at top,#49301a,#21140d 70%);color:#fff;padding:22px 16px 24px;border-bottom:4px solid var(--gold)}
+.brand{max-width:960px;margin:auto;display:flex;align-items:center;gap:14px}
+.logo{width:68px;height:68px;flex-shrink:0}
+h1{font-size:clamp(25px,5vw,36px);margin:0;letter-spacing:1.5px;color:var(--gold2);line-height:1.1}
+.tag{margin:7px 0 0;font-size:12px;letter-spacing:2px;color:#fff2d3}
+.credit{margin-top:8px;color:#f1dca9;font-size:12px}.credit b{font-weight:800}
+.wrap{width:min(960px,100%);margin:22px auto;padding:0 14px 40px}
+.card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:20px;margin:0 0 16px;box-shadow:0 8px 24px #42270c0c}
+h2{margin:0 0 14px;font-size:20px;color:#352113}h3{margin:0 0 8px;font-size:16px}
+p{line-height:1.5}.muted,.hint{color:var(--muted);font-size:13px}
+label{display:block;font-weight:650;font-size:13px;margin:12px 0 6px}
+input{display:block;width:100%;border:1px solid #d8cbb4;background:#fffdf8;border-radius:11px;padding:13px;font:inherit;outline:none}
+input:focus{border-color:#bd8e2e;box-shadow:0 0 0 3px #d9ad4f30}
+button{border:0;border-radius:11px;background:linear-gradient(135deg,#f3d47d,#c79631);color:#281a0c;font-weight:800;padding:13px 16px;font-size:14px;cursor:pointer;width:100%;margin-top:14px}
+button.secondary{background:#f6efe1;border:1px solid #ddc99f;color:#3b2917}
+button:disabled{opacity:.6;cursor:wait}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.hidden{display:none!important}.msg{margin-top:12px;border-radius:10px;padding:11px 12px;font-size:14px;display:none}
+.msg.show{display:block}.msg.ok{background:#e8f6ec;color:#205e35}.msg.bad{background:#fff0ef;color:#8d2626}
+.tabs{display:flex;gap:8px;margin-bottom:14px}.tabs button{margin:0;flex:1;padding:10px 5px}
+.tabs button.active{background:#2a1a0e;color:#f6d982}
+.balancebox{background:linear-gradient(130deg,#2a1a0e,#49301a);color:#fff;border-radius:16px;padding:18px;margin-bottom:12px}
+.balancebox .label{font-size:12px;color:#f0dcae;letter-spacing:1.2px}.amount{font-size:32px;font-weight:800;color:#f6d982;margin-top:4px;overflow-wrap:anywhere}
+.walletid{font-size:13px;color:#f5e8cb;margin-top:10px}.walletid strong{font-size:23px;letter-spacing:3px;color:white}
+.row{display:flex;gap:10px;align-items:center}.row>*{flex:1}
+.transaction{padding:12px 0;border-bottom:1px solid #eee4d4;font-size:13px}.transaction:last-child{border:0}
+footer{text-align:center;color:#7b6a55;font-size:12px;padding:12px}
+@media(max-width:520px){.grid{grid-template-columns:1fr}.card{padding:16px}.top{padding-top:18px}.logo{width:58px;height:58px}}
+</style></head>
 <body>
-<header><div class="brand"><div class="coin">E</div><div><h1>EASY WALLET</h1><small>Digital currency wallet</small></div></div></header>
-<main>
-<div id="notice" class="notice hidden" role="status"></div>
-<section id="auth">
-  <div class="tabs"><button class="tab active" data-panel="loginPanel">Log in</button><button class="tab" data-panel="registerPanel">Create account</button><button class="tab" data-panel="resetPanel">Forgot password</button></div>
-  <section id="loginPanel" class="panel">
-    <h2>Welcome back</h2><p class="muted">Log in with your system-generated Account ID.</p>
-    <form id="loginForm"><label>4-digit Account ID<input name="account_id" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" required placeholder="e.g. 4826"></label><label>Login password<input name="password" type="password" minlength="8" required autocomplete="current-password"></label><button class="primary">Log in securely</button></form>
-  </section>
-  <section id="registerPanel" class="panel hidden">
-    <h2>Create your wallet</h2><p class="muted">Verify your phone number. Your Account ID is assigned by the system.</p>
-    <form id="otpForm"><label>Ugandan mobile number<input name="phone" type="tel" required placeholder="07XXXXXXXX or +2567XXXXXXXX"></label><button class="secondary">Send registration OTP</button></form>
-    <form id="registerForm" class="spaced"><label>SMS OTP<input name="otp" inputmode="numeric" maxlength="6" required placeholder="6-digit code"></label><label>Create login password<input name="password" type="password" minlength="8" required autocomplete="new-password"></label><label>Transaction PIN (4–6 digits)<input name="pin" type="password" inputmode="numeric" pattern="[0-9]{4,6}" minlength="4" maxlength="6" required autocomplete="new-password"></label><label>Confirm transaction PIN<input name="confirm_pin" type="password" inputmode="numeric" pattern="[0-9]{4,6}" minlength="4" maxlength="6" required></label><button class="primary">Verify & create account</button></form>
-    <div id="accountCard" class="account-card hidden"><small>Your new EASY WALLET Account ID</small><strong id="newAccountId">----</strong><p id="accountMessage"></p><button id="continueBtn" class="primary">Continue to wallet</button></div>
-  </section>
-  <section id="resetPanel" class="panel hidden">
-    <h2>Reset login password</h2><p class="muted">An OTP will be sent to your registered phone number.</p>
-    <form id="resetOtpForm"><label>Registered mobile number<input name="phone" type="tel" required placeholder="07XXXXXXXX or +2567XXXXXXXX"></label><button class="secondary">Send reset OTP</button></form>
-    <form id="resetForm" class="spaced"><label>SMS OTP<input name="otp" inputmode="numeric" maxlength="6" required></label><label>New login password<input name="new_password" type="password" minlength="8" required autocomplete="new-password"></label><button class="primary">Reset password</button></form>
-    <p class="muted tiny">Password recovery does not change your transaction PIN.</p>
-  </section>
+<header class="top"><div class="brand">
+<svg class="logo" viewBox="0 0 100 100" aria-label="EASY WALLET logo" role="img">
+<defs><linearGradient id="gold" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff0a6"/><stop offset=".5" stop-color="#d9ad4f"/><stop offset="1" stop-color="#9d6a1b"/></linearGradient></defs>
+<path d="M17 27Q17 18 28 18H76Q83 18 83 27V76Q83 84 74 84H25Q17 84 17 76Z" fill="#5a351c" stroke="url(#gold)" stroke-width="3"/>
+<path d="M17 35H83V66H17Z" fill="#382111" stroke="url(#gold)" stroke-width="2"/>
+<path d="M64 35H82Q90 35 90 44V56Q90 64 82 64H64Q55 64 55 55V45Q55 35 64 35Z" fill="url(#gold)" stroke="#714914" stroke-width="2"/>
+<circle cx="71" cy="49.5" r="3.5" fill="#382111"/><text x="43" y="57" text-anchor="middle" font-family="Georgia,serif" font-weight="bold" font-size="25" fill="url(#gold)">EW</text>
+<path d="M27 13Q51 2 73 14" fill="none" stroke="url(#gold)" stroke-width="3" stroke-linecap="round"/>
+</svg>
+<div><h1>EASY WALLET</h1><div class="tag">SEND · RECEIVE · SAVE · GROW</div><div class="credit">Designed by <b>DIRTY GUN</b></div></div>
+</div></header>
+<main class="wrap">
+<section id="auth" class="card">
+<h2>Welcome to EASY WALLET</h2>
+<p class="muted">Create your personal EASY COIN (EAC) wallet or sign in to continue.</p>
+<div class="tabs"><button id="tabLogin" class="active" type="button" onclick="showAuth('login')">Login</button><button id="tabRegister" class="secondary" type="button" onclick="showAuth('register')">Create account</button><button id="tabRecover" class="secondary" type="button" onclick="showAuth('recover')">Forgot password</button></div>
+<div id="loginPanel">
+<h3>Login to your wallet</h3>
+<label>Registered phone number</label><input id="loginPhone" inputmode="tel" placeholder="07XXXXXXXX or +2567XXXXXXXX" autocomplete="tel">
+<label>Password</label><input id="loginPassword" type="password" autocomplete="current-password" placeholder="Your password">
+<button id="loginBtn" onclick="login()">Login securely</button>
+<p id="lockCountdown" class="hint"></p><div id="loginMsg" class="msg"></div>
+</div>
+<div id="registerPanel" class="hidden">
+<h3>Create your account</h3>
+<p class="hint">A 4-digit OTP will be sent by SMS. Your wallet ID is generated after phone verification.</p>
+<label>Full name</label><input id="regName" autocomplete="name" maxlength="80" placeholder="Enter your full name">
+<label>Mobile phone number</label><input id="regPhone" inputmode="tel" autocomplete="tel" placeholder="07XXXXXXXX or +2567XXXXXXXX">
+<label>Create login password</label><input id="regPassword" type="password" autocomplete="new-password" placeholder="At least 8 characters, letters and numbers">
+<div class="grid"><div><label>4-digit transaction PIN</label><input id="txPin" type="password" inputmode="numeric" maxlength="4" pattern="[0-9]*" placeholder="••••"></div><div><label>4-digit security PIN</label><input id="secPin" type="password" inputmode="numeric" maxlength="4" pattern="[0-9]*" placeholder="••••"></div></div>
+<p class="hint">Choose different PINs. Never share your OTP, password or PINs.</p>
+<button id="requestOtpBtn" onclick="requestOtp()">Send registration OTP</button>
+<div id="otpVerifyPanel" class="hidden"><label>4-digit OTP from SMS</label><input id="regOtp" inputmode="numeric" maxlength="4" placeholder="Enter OTP"><button id="verifyOtpBtn" onclick="verifyOtp()">Verify OTP and create wallet</button></div>
+<div id="registerMsg" class="msg"></div>
+</div>
+<div id="recoverPanel" class="hidden">
+<h3>Reset forgotten password</h3>
+<label>Registered phone number</label><input id="recoverPhone" inputmode="tel" placeholder="07XXXXXXXX or +2567XXXXXXXX">
+<button onclick="requestRecovery()">Send recovery OTP</button>
+<label>4-digit OTP</label><input id="recoverOtp" inputmode="numeric" maxlength="4" placeholder="OTP from SMS">
+<label>New password</label><input id="newPassword" type="password" autocomplete="new-password" placeholder="At least 8 characters, letters and numbers">
+<button onclick="resetPassword()">Reset password</button><div id="recoverMsg" class="msg"></div>
+</div>
 </section>
-<section id="wallet" class="hidden">
-  <div class="wallet-top"><div><p class="muted">Your account</p><h2 id="walletAccount">----</h2></div><button id="logoutBtn" class="outline">Log out</button></div>
-  <div class="balance-card"><span>Wallet balance</span><strong><span id="balance">0</span> <small>coins</small></strong><p>Digital currency balance</p></div>
-  <div class="card"><h3>Send digital coins</h3><form id="transferForm"><label>Recipient's 4-digit Account ID<input name="receiver_account_id" inputmode="numeric" maxlength="4" pattern="[0-9]{4}" required></label><label>Amount (whole coins)<input name="amount" type="number" min="1" step="1" required></label><label>Transaction PIN<input name="pin" type="password" inputmode="numeric" minlength="4" maxlength="6" required></label><button class="primary">Confirm transfer</button></form><p class="muted tiny">Transfers require sufficient balance. Never share your PIN.</p></div>
-  <div class="card"><h3>Recent transactions</h3><div id="transactions" class="transactions"><p class="muted">No transactions yet.</p></div></div>
+<section id="dashboard" class="hidden">
+<div class="card"><div class="row"><div><h2 style="margin-bottom:4px">My wallet</h2><div id="userName" class="muted"></div></div><button class="secondary" style="max-width:125px;margin-top:0" onclick="logout()">Logout</button></div>
+<div class="balancebox" style="margin-top:16px"><div class="label">AVAILABLE BALANCE</div><div class="amount"><span id="balance">0</span> EAC</div><div class="walletid">YOUR 5-DIGIT WALLET ID<br><strong id="walletId">-----</strong></div></div>
+<div class="grid"><div><h3>Send EASY COIN</h3><label>Recipient wallet ID</label><input id="recipientId" inputmode="numeric" maxlength="5" placeholder="5-digit ID"><label>Amount (whole EAC)</label><input id="sendAmount" type="number" min="1" step="1" placeholder="Amount"><label>Transaction PIN</label><input id="sendPin" type="password" inputmode="numeric" maxlength="4" placeholder="4-digit PIN"><button onclick="sendCoins()">Send coins</button><div id="sendMsg" class="msg"></div></div>
+<div><h3>Account details</h3><p class="muted">Phone: <b id="userPhone"></b></p><p class="muted">Currency: <b>EASY COIN (EAC)</b></p><p class="muted">Your wallet ID is also sent by SMS after registration, subject to SMS delivery.</p></div></div></div>
+<div class="card"><h2>Recent transactions</h2><div id="transactions" class="muted">No transactions yet.</div><button class="secondary" onclick="loadTransactions()">Refresh transactions</button></div>
 </section>
+<footer>EASY WALLET · Designed by DIRTY GUN<br>Keep your account credentials private.</footer>
 </main>
-<footer>Designed by DIRTY GUN <span>•</span> EASY WALLET</footer>
-<script src="/static/app.js"></script>
+<script>
+let pendingPhone = "";
+let countdownTimer = null;
+function showMsg(id,text,ok=false){const el=document.getElementById(id);el.textContent=text;el.className='msg show '+(ok?'ok':'bad')}
+function clearMsg(id){const el=document.getElementById(id);el.textContent='';el.className='msg'}
+function showAuth(which){['login','register','recover'].forEach(k=>document.getElementById(k+'Panel').classList.toggle('hidden',k!==which));['login','register','recover'].forEach(k=>{const b=document.getElementById('tab'+k[0].toUpperCase()+k.slice(1));b.classList.toggle('active',k===which);b.classList.toggle('secondary',k!==which)});['loginMsg','registerMsg','recoverMsg'].forEach(clearMsg)}
+async function api(url,data){const r=await fetch(url,{method:data?'POST':'GET',headers:data?{'Content-Type':'application/json'}:{},body:data?JSON.stringify(data):undefined,credentials:'same-origin'});let j={};try{j=await r.json()}catch(e){}if(!r.ok){const err=new Error(j.message||'Something went wrong.');err.data=j;err.status=r.status;throw err}return j}
+function phone(id){return document.getElementById(id).value.trim()}
+function digits(id){return document.getElementById(id).value.trim()}
+function startCountdown(seconds){if(countdownTimer)clearInterval(countdownTimer);const el=document.getElementById('lockCountdown');let end=Date.now()+seconds*1000;function tick(){let left=Math.max(0,Math.ceil((end-Date.now())/1000));el.textContent=left?`Login locked. Try again in ${String(Math.floor(left/60)).padStart(2,'0')}:${String(left%60).padStart(2,'0')}`:'';document.getElementById('loginBtn').disabled=left>0;if(left<=0)clearInterval(countdownTimer)}tick();countdownTimer=setInterval(tick,1000)}
+async function requestOtp(){clearMsg('registerMsg');const name=phone('regName'),ph=phone('regPhone'),pw=document.getElementById('regPassword').value,tx=digits('txPin'),sec=digits('secPin');if(tx.length!==4||sec.length!==4){showMsg('registerMsg','Both PINs must contain exactly 4 digits.');return}if(tx===sec){showMsg('registerMsg','Choose different transaction and security PINs.');return}const b=document.getElementById('requestOtpBtn');b.disabled=true;try{const j=await api('/api/register/request-otp',{full_name:name,phone:ph,password:pw,transaction_pin:tx,security_pin:sec});pendingPhone=ph;document.getElementById('otpVerifyPanel').classList.remove('hidden');showMsg('registerMsg',j.message,true)}catch(e){showMsg('registerMsg',e.message)}finally{b.disabled=false}}
+async function verifyOtp(){clearMsg('registerMsg');const otp=digits('regOtp');if(!pendingPhone){pendingPhone=phone('regPhone')}try{const j=await api('/api/register/verify-otp',{phone:pendingPhone,otp});showMsg('registerMsg',`${j.message} Wallet ID: ${j.wallet_id}`,true);await loadMe()}catch(e){showMsg('registerMsg',e.message)}}
+async function login(){clearMsg('loginMsg');try{const j=await api('/api/login',{phone:phone('loginPhone'),password:document.getElementById('loginPassword').value});if(countdownTimer)clearInterval(countdownTimer);await loadMe()}catch(e){showMsg('loginMsg',e.message);if(e.data&&e.data.retry_after)startCountdown(e.data.retry_after)}}
+async function requestRecovery(){clearMsg('recoverMsg');try{const j=await api('/api/recovery/request-otp',{phone:phone('recoverPhone')});showMsg('recoverMsg',j.message,true)}catch(e){showMsg('recoverMsg',e.message)}}
+async function resetPassword(){clearMsg('recoverMsg');try{const j=await api('/api/recovery/reset-password',{phone:phone('recoverPhone'),otp:digits('recoverOtp'),new_password:document.getElementById('newPassword').value});showMsg('recoverMsg',j.message,true)}catch(e){showMsg('recoverMsg',e.message)}}
+async function loadMe(){try{const j=await api('/api/me');document.getElementById('auth').classList.add('hidden');document.getElementById('dashboard').classList.remove('hidden');document.getElementById('userName').textContent=j.user.full_name;document.getElementById('userPhone').textContent=j.user.phone;document.getElementById('walletId').textContent=j.user.wallet_id;document.getElementById('balance').textContent=Number(j.user.balance).toLocaleString();await loadTransactions()}catch(e){document.getElementById('auth').classList.remove('hidden');document.getElementById('dashboard').classList.add('hidden')}}
+async function logout(){try{await api('/api/logout',{})}catch(e){}document.getElementById('dashboard').classList.add('hidden');document.getElementById('auth').classList.remove('hidden');showAuth('login')}
+async function sendCoins(){clearMsg('sendMsg');const amount=Number(document.getElementById('sendAmount').value);if(!Number.isSafeInteger(amount)||amount<=0){showMsg('sendMsg','Enter a positive whole-number amount.');return}try{const j=await api('/api/transfer',{recipient_wallet_id:digits('recipientId'),amount,transaction_pin:digits('sendPin')});showMsg('sendMsg',j.message,true);document.getElementById('sendPin').value='';await loadMe()}catch(e){showMsg('sendMsg',e.message)}}
+async function loadTransactions(){try{const j=await api('/api/transactions');const el=document.getElementById('transactions');if(!j.transactions.length){el.textContent='No transactions yet.';return}el.innerHTML=j.transactions.map(t=>`<div class="transaction"><b>${t.sender_wallet===document.getElementById('walletId').textContent?'Sent':'Received'} ${Number(t.amount).toLocaleString()} EAC</b><br><span class="muted">${t.sender_wallet} → ${t.recipient_wallet}<br>${new Date(t.created_at).toLocaleString()}</span></div>`).join('')}catch(e){}}
+loadMe();
+</script>
 </body></html>
